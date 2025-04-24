@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>髮型試戴 v6</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body.light-mode { background-color: #fff8f0; color: #000; }
+    body.dark-mode { background-color: #121212; color: #fff; }
+    .hair-image {
+      position: absolute;
+      top: 0;
+      width: 120px;
+      height: 80px;
+    }
+    .photo-box {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: auto;
+    }
+    .photo-box img {
+      object-fit: cover;
+    }
+    .hair-option img {
+      width: 60px;
+      height: auto;
+      border-radius: 5px;
+      margin: 0 5px;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .hair-option img.selected {
+      border-color: orange;
+    }
+    .page { display: none; }
+    .page.active { display: block; }
+  </style>
+</head>
+<body class="light-mode">
+  <div id="page-gender" class="page active container text-center py-5">
+    <h1 class="mb-4">請選擇性別</h1>
+    <button class="btn btn-primary btn-lg mx-3" onclick="startApp('男生')">男生</button>
+    <button class="btn btn-danger btn-lg mx-3" onclick="startApp('女生')">女生</button>
+  </div>
+
+  <div id="page-app" class="page container py-4 text-center">
+    <div class="d-flex justify-content-between align-items-center">
+      <h1 class="mb-0">髮型試戴 v6</h1>
+      <button id="themeToggle" class="btn btn-sm btn-outline-secondary">🌙</button>
+    </div>
+
+    <h5 id="genderLabel" class="text-muted mt-3">選擇： </h5>
+    <button class="btn btn-outline-secondary btn-sm my-2" onclick="goBack()">← 回首頁</button>
+
+    <div class="photo-box mt-4 mb-3">
+      <img id="userPhoto" src="" alt="自拍" width="200" height="200">
+      <img id="hairOverlay" class="hair-image" src="https://i.imgur.com/IqE3w6F.png">
+    </div>
+
+    <label for="imageInput" class="btn btn-outline-primary mb-3">📷 選擇自拍</label>
+<input type="file" id="imageInput" accept="image/*" capture="environment" class="d-none">
+
+    <div class="hair-option d-flex justify-content-center my-3" id="hairOptions">
+      <!-- 髮型選項將根據性別載入 -->
+    </div>
+
+    <button class="btn btn-primary mb-2" onclick="shareMock()">儲存並分享（模擬）</button>
+  </div>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const photo = document.getElementById('userPhoto');
+    const input = document.getElementById('imageInput');
+    const hairOverlay = document.getElementById('hairOverlay');
+    const genderLabel = document.getElementById('genderLabel');
+    const hairOptions = document.getElementById('hairOptions');
+
+    const hairMap = {
+      "男生": [
+        "https://i.imgur.com/4YQZ8Uo.png",
+        "https://i.imgur.com/Zcf6GWB.png",
+        "https://i.imgur.com/UumBtLb.png"
+      ],
+      "女生": [
+        "https://i.imgur.com/IqE3w6F.png",
+        "https://i.imgur.com/qGGXzTV.png",
+        "https://i.imgur.com/2Q9MvGs.png"
+      ]
+    };
+
+    function goBack() {
+      document.getElementById('page-app').classList.remove('active');
+      document.getElementById('page-gender').classList.add('active');
+    }
+
+    function startApp(gender) {
+      document.getElementById('page-gender').classList.remove('active');
+      document.getElementById('page-app').classList.add('active');
+      genderLabel.textContent = '選擇：' + gender;
+
+      // 建立對應髮型選單
+      hairOptions.innerHTML = '';
+      hairMap[gender].forEach((url, index) => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.onclick = () => selectHair(img);
+        if (index === 0) {
+          img.classList.add('selected');
+          hairOverlay.src = url;
+        }
+        hairOptions.appendChild(img);
+      });
+    }
+
+    function selectHair(imgElement) {
+      document.querySelectorAll('.hair-option img').forEach(img => img.classList.remove('selected'));
+      imgElement.classList.add('selected');
+      hairOverlay.src = imgElement.src;
+    }
+
+    function shareMock() {
+      alert("已儲存畫面並模擬分享！\n（實機需打包 App 並呼叫原生分享 API）");
+    }
+
+    input.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        photo.src = URL.createObjectURL(file);
+      }
+    });
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = body.classList.toggle('dark-mode');
+      body.classList.toggle('light-mode', !isDark);
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('darkMode', isDark);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = localStorage.getItem('darkMode') === 'true';
+      body.classList.toggle('dark-mode', saved);
+      body.classList.toggle('light-mode', !saved);
+      themeToggle.textContent = saved ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>

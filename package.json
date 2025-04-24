@@ -1,0 +1,15 @@
+
+{
+  "name": "hairstyle-apk",
+  "version": "1.0.0",
+  "description": "Hairstyle app using Capacitor",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo No build step needed"
+  },
+  "dependencies": {
+    "@capacitor/core": "latest",
+    "@capacitor/camera": "latest",
+    "@capacitor/android": "latest"
+  }
+}
