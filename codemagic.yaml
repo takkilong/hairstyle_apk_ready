@@ -1,10 +1,9 @@
 workflows:
   android-build:
     name: Build Android APK
+    max_build_duration: 10
     environment:
       flutter: stable
-      android_signing:
-        keystore_reference: null
       vars:
         PACKAGE_NAME: "com.example.hairstyle"
     scripts:
