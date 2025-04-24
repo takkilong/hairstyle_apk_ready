@@ -1,0 +1,13 @@
+
+{
+  "appId": "com.example.hairstyle",
+  "appName": "hairstyle",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "Camera": {
+      "presentationStyle": "fullscreen",
+      "saveToGallery": true
+    }
+  }
+}
